@@ -41,10 +41,14 @@ func TestSaveStat(t *testing.T) {
 		requested_json string
 		expected_code  int
 	}{
-		{``, 400},
+		{`{ "date": "2022-12-31", "views": 9, "cost": "2.00", "clicks": 1  }`, 202},
+		{`{ "date": "2022-12-31" }`, 202},
+		{`{ "date": "2022-12-31", "cost": "2.00" }`, 202},
 		{`{ "date": "2022-12-31", "views": 9, "clicks": 1, "cost": "2.00" }`, 202},
 		{`{ "date": "2022-12-31", "views": 9, "clicks": 1, "cost": "2.0" }`, 202},
 		{`{ "date": "2022-12-31", "views": 9, "clicks": 1, "cost": "2" }`, 202},
+		{``, 400},
+		{`{ "views": 9, "clicks": 1, "cost": "2.00" }`, 400},
 		{`{ "date": "202a-12-31", "views": 9, "clicks": 1, "cost": "2.00" }`, 400},
 		{`{ "date": "2022-13-31", "views": 9, "clicks": 1, "cost": "2.00" }`, 400},
 		{`{ "date": "2022-12-32", "views": 9, "clicks": 1, "cost": "2.00" }`, 400},

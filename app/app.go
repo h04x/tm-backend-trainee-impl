@@ -66,6 +66,7 @@ func New(config *config.Config) (*App, error) {
 
 	router.POST("/save_stat", saveStat(dbpool))
 	router.POST("/get_stat", getStat(dbpool))
+	router.DELETE("/clear_stat", clearStat(dbpool))
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	router.GET("/test", func(c *gin.Context) {
 		_, err := dbpool.Exec(c, "select pg_sleep(10)")
@@ -73,7 +74,7 @@ func New(config *config.Config) (*App, error) {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}
-		c.Status(http.StatusAccepted)
+		c.Status(http.StatusOK)
 	})
 
 	c := &App{

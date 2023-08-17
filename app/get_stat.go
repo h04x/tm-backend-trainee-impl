@@ -1,24 +1,21 @@
 package app
 
 import (
-	//"database/sql"
-	"log"
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"net/http"
 )
 
-const GetStatReq = `select date::text, views, clicks, cost, round(cost / clicks, 2) as cpc, 
+const GetStatSql = `select date::text, views, clicks, cost, round(cost / clicks, 2) as cpc, 
 round(cost / views * 1000, 2) as cpm from clicks
 where date between $1 and $2 order by date`
 
-type ShowStatReq struct {
+type GetStatReq struct {
 	From string `binding:"required,datetime=2006-01-02"`
 	To   string `binding:"required,datetime=2006-01-02"`
 }
 
-type ShowStatResp struct {
+type GetStatResp struct {
 	Date   string
 	Views  uint
 	Clicks uint
@@ -29,32 +26,32 @@ type ShowStatResp struct {
 
 func getStat(db *pgxpool.Pool) gin.HandlerFunc {
 	f := func(c *gin.Context) {
-		r := ShowStatReq{}
 
+		r := GetStatReq{}
 		if err := c.ShouldBindJSON(&r); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error": err,
-			})
+			c.AbortWithError(http.StatusBadRequest, err)
 			return
 		}
 
-		rows, err := db.Query(c, GetStatReq, r.From, r.To)
+		rows, err := db.Query(c, GetStatSql, r.From, r.To)
 		if err != nil {
-			log.Fatal(err)
+			c.AbortWithError(http.StatusInternalServerError, err)
+			return
 		}
 		defer rows.Close()
 
-		var stats []ShowStatResp
+		var stats []GetStatResp
 		for rows.Next() {
-			var showStat ShowStatResp
+			var showStat GetStatResp
 			if err := rows.Scan(&showStat.Date, &showStat.Views, &showStat.Clicks,
 				&showStat.Cost, &showStat.Cpc, &showStat.Cpm); err != nil {
-				log.Fatal(err)
+				c.AbortWithError(http.StatusInternalServerError, err)
+				return
 			}
 			stats = append(stats, showStat)
 		}
 
-		c.JSON(http.StatusAccepted, &stats)
+		c.JSON(http.StatusOK, &stats)
 	}
 	return f
 }

@@ -1,18 +1,10 @@
 package app
 
 import (
-	//"database/sql"
-	//"context"
-	//"fmt"
-	//"io"
-
-	//"io"
-	//"log"
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"net/http"
 )
 
 const SaveStatdbReq = `insert into clicks (date, views, clicks, cost) 
@@ -39,7 +31,10 @@ type SaveStat struct {
 // @Router       /save_stat [get]
 func saveStat(db *pgxpool.Pool) gin.HandlerFunc {
 	f := func(c *gin.Context) {
-		t := SaveStat{}
+		// init special default Cost field
+		t := SaveStat{
+			Cost: "0",
+		}
 		if err := c.ShouldBindBodyWith(&t, binding.JSON); err != nil {
 			c.AbortWithError(http.StatusBadRequest, err)
 			return
