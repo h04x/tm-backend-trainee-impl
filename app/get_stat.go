@@ -1,10 +1,12 @@
-package main
+package app
 
 import (
-	"database/sql"
-	"github.com/gin-gonic/gin"
+	//"database/sql"
 	"log"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 const GetStatReq = `select date::text, views, clicks, cost, round(cost / clicks, 2) as cpc, 
@@ -25,7 +27,7 @@ type ShowStatResp struct {
 	Cpm    float32
 }
 
-func getStat(db *sql.DB) gin.HandlerFunc {
+func getStat(db *pgxpool.Pool) gin.HandlerFunc {
 	f := func(c *gin.Context) {
 		r := ShowStatReq{}
 
@@ -36,7 +38,7 @@ func getStat(db *sql.DB) gin.HandlerFunc {
 			return
 		}
 
-		rows, err := db.Query(GetStatReq, r.From, r.To)
+		rows, err := db.Query(c, GetStatReq, r.From, r.To)
 		if err != nil {
 			log.Fatal(err)
 		}

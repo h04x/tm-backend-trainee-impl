@@ -1,0 +1,5 @@
+app:
+  listen: '0.0.0.0:12121'
+
+postgres:
+  URL: 'postgres://statcounters:QWaQWE41sdsdgex@10.0.0.1/statcounters?sslmode=disable&&pool_max_conns=2'

@@ -1,0 +1,42 @@
+definitions:
+  main.SaveStat:
+    properties:
+      clicks:
+        type: integer
+      cost:
+        type: string
+      date:
+        type: string
+      views:
+        type: integer
+    required:
+    - date
+    type: object
+info:
+  contact: {}
+paths:
+  /save_stat:
+    get:
+      consumes:
+      - application/json
+      description: save stat
+      parameters:
+      - description: date
+        format: string
+        in: query
+        name: date
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/main.SaveStat'
+            type: array
+      summary: List accounts
+      tags:
+      - accounts
+swagger: "2.0"
