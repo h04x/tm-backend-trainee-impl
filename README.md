@@ -3,5 +3,4 @@
 
 ## Используемые библиотеки
 Роутер Gin  
-Postgres pgxpool  
-Swagger swago/swag
+Postgres pgxpool

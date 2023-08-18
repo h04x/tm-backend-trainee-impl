@@ -20,15 +20,6 @@ type SaveStat struct {
 	Cost   string `binding:"TwoDigitAfterPointNumber"`
 }
 
-// saveStat
-// @Summary      List accounts
-// @Description  save stat
-// @Tags         accounts
-// @Accept       json
-// @Produce      json
-// @Param        date    query     string  true  "date"  Format(string)
-// @Success      200  {array}   SaveStat
-// @Router       /save_stat [get]
 func saveStat(db *pgxpool.Pool) gin.HandlerFunc {
 	f := func(c *gin.Context) {
 		// init special default Cost field

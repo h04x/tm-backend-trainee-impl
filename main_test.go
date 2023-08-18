@@ -44,13 +44,17 @@ func TestSaveStat(t *testing.T) {
 		{`{ "date": "2022-12-31", "views": 9, "cost": "2.00", "clicks": 1  }`, 202},
 		{`{ "date": "2022-12-31" }`, 202},
 		{`{ "date": "2022-12-31", "cost": "2.00" }`, 202},
-		{`{ "date": "2022-12-31", "views": 9, "clicks": 1, "cost": "2.00" }`, 202},
-		{`{ "date": "2022-12-31", "views": 9, "clicks": 1, "cost": "2.0" }`, 202},
-		{`{ "date": "2022-12-31", "views": 9, "clicks": 1, "cost": "2" }`, 202},
+		{`{ "date": "2021-12-31", "views": 9, "clicks": 1, "cost": "3.00" }`, 202},
+		{`{ "date": "2022-11-30", "views": 9, "clicks": 1, "cost": "2.0" }`, 202},
+		{`{ "date": "2022-12-30", "views": 9, "clicks": 1, "cost": "1" }`, 202},
+		{`{ "date": "2023-12-30", "views": 9, "clicks": 1, "cost": "1.23" }`, 202},
+		{`{ "date": "2013-12-30", "views": 9, "clicks": 1, "cost": "0.0" }`, 202},
+		{`{ "date": "2013-12-30", "views": 9, "clicks": 1, "cost": "0.00" }`, 202},
 		{``, 400},
 		{`{ "views": 9, "clicks": 1, "cost": "2.00" }`, 400},
 		{`{ "date": "202a-12-31", "views": 9, "clicks": 1, "cost": "2.00" }`, 400},
 		{`{ "date": "2022-13-31", "views": 9, "clicks": 1, "cost": "2.00" }`, 400},
+		{`{ "date": "2022-13-31", "views": 9, "clicks": 1, "cost": "2,00" }`, 400},
 		{`{ "date": "2022-12-32", "views": 9, "clicks": 1, "cost": "2.00" }`, 400},
 		{`{ "date": "2022-12-31", "views": "9", "clicks": 1, "cost": "2.00" }`, 400},
 		{`{ "date": "2022-12-31", "views": -9, "clicks": 1, "cost": "2.00" }`, 400},
@@ -60,7 +64,6 @@ func TestSaveStat(t *testing.T) {
 		{`{ "date": "2022-12-31", "views": 9, "clicks": 1, "cost": "-2.00" }`, 400},
 		{`{ "date": "2022-12-31", "views": 9, "clicks": 1, "cost": "2.001" }`, 400},
 		{`{ "date": "2022-12-31", "views": 9, "clicks": 1, "cost": "2.a0" }`, 400},
-		{`{ "date": "2022-12-31", "views": 9, "clicks": 1, "cost": "2." }`, 400},
 		{`{ "date": "2022-12-31", "views": 9, "clicks": 1, "cost": "2." }`, 400},
 	}
 
@@ -73,4 +76,26 @@ func TestSaveStat(t *testing.T) {
 		}
 
 	}
+}
+
+func TestClearStat(t *testing.T) {
+	app, err := app.Testing()
+	assert.Equal(t, err, nil)
+	defer app.Db.Close()
+
+	rh := RequestHelper{
+		t,
+		app.Router,
+	}
+
+	body, actual_code := rh.DoRequest("POST", "/save_stat",
+		`{ "date": "2020-10-11" }`)
+	assert.Equal(t, []byte{}, body)
+	assert.Equal(t, 202, actual_code)
+
+	body, actual_code = rh.DoRequest("POST", "/get_stat",
+		`{ "from": "2020-10-11", "to": "2020-10-11" }`)
+	assert.Equal(t, []byte{}, body)
+	assert.Equal(t, 200, actual_code)
+
 }

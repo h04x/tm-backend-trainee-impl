@@ -2,7 +2,6 @@ package main
 
 import (
 	"gin-helloworld/app"
-	_ "gin-helloworld/docs"
 	"log"
 )
 

@@ -3,21 +3,15 @@ package app
 import (
 	"context"
 	"fmt"
-	"net/http"
-
-	//"fmt"
-	//"io"
-	"log"
-	//"fmt"
 	"gin-helloworld/config"
+	"log"
+	"net/http"
 	"regexp"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
 	"github.com/jackc/pgx/v5/pgxpool"
-	swaggerfiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type App struct {
@@ -67,7 +61,6 @@ func New(config *config.Config) (*App, error) {
 	router.POST("/save_stat", saveStat(dbpool))
 	router.POST("/get_stat", getStat(dbpool))
 	router.DELETE("/clear_stat", clearStat(dbpool))
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	router.GET("/test", func(c *gin.Context) {
 		_, err := dbpool.Exec(c, "select pg_sleep(10)")
 		if err != nil {
