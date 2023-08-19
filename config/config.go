@@ -8,15 +8,15 @@ import (
 
 type Config struct {
 	App `yaml:"app"`
-	Pg  `yaml:"postgres"`
+	Pg
 }
 
 type App struct {
-	Listen string `env-required:"true" yaml:"listen" env:"APP_LISTEN"`
+	Port string `env-required:"true" yaml:"port" env:"APP_PORT"`
 }
 
 type Pg struct {
-	Url string `env-required:"true" yaml:"URL" env:"PG_URL"`
+	Url string `env-required:"true" env:"POSTGRES_URL"`
 }
 
 func NewConfig(configPath string) (*Config, error) {

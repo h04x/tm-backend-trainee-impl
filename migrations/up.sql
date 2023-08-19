@@ -6,5 +6,3 @@ CREATE TABLE clicks (
 );
 
 CREATE INDEX clicks_date_idx ON clicks (date);
-
-grant all on clicks to statcounters;

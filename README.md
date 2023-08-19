@@ -4,3 +4,6 @@
 ## Используемые библиотеки
 Роутер Gin  
 Postgres pgxpool
+
+## Запуск
+docker-compose up --build -d

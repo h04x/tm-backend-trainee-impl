@@ -103,5 +103,7 @@ func errorHandler(c *gin.Context) {
 }
 
 func (app *App) Run() error {
-	return app.Router.Run(app.config.App.Listen)
+	listen := ":" + app.config.App.Port
+	fmt.Println("Run server on " + listen)
+	return app.Router.Run(listen)
 }
