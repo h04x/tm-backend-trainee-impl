@@ -28,7 +28,7 @@ func (rq *RequestHelper) DoRequest(method string, url string, body string) ([]by
 }
 
 func TestClearStat(t *testing.T) {
-	app, err := app.Testing()
+	app, err := app.Default()
 	assert.Equal(t, err, nil)
 	defer app.Db.Close()
 
@@ -67,7 +67,7 @@ func TestClearStat(t *testing.T) {
 }
 
 func TestGetStat(t *testing.T) {
-	app, err := app.Testing()
+	app, err := app.Default()
 	assert.Equal(t, err, nil)
 	defer app.Db.Close()
 
@@ -135,7 +135,7 @@ func TestGetStat(t *testing.T) {
 }
 
 func TestSaveStat(t *testing.T) {
-	app, err := app.Testing()
+	app, err := app.Default()
 	assert.Equal(t, err, nil)
 	defer app.Db.Close()
 

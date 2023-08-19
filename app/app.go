@@ -28,14 +28,6 @@ func Default() (*App, error) {
 	return New(config)
 }
 
-func Testing() (*App, error) {
-	config, err := config.NewConfig("config/testing.yaml")
-	if err != nil {
-		return nil, err
-	}
-	return New(config)
-}
-
 func New(config *config.Config) (*App, error) {
 	dbpool, err := pgxpool.New(context.Background(), config.Pg.Url)
 	if err != nil {
