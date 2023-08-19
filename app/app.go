@@ -51,7 +51,11 @@ func New(config *config.Config) (*App, error) {
 	if !ok {
 		return nil, fmt.Errorf("error while obtaining validator engine")
 	}
-	v.RegisterValidation("TwoDigitAfterPointNumber", TwoDigitAfterPointNumber)
+
+	err = v.RegisterValidation("TwoDigitAfterPointNumber", TwoDigitAfterPointNumber)
+	if err != nil {
+		return nil, err
+	}
 
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
@@ -98,6 +102,6 @@ func errorHandler(c *gin.Context) {
 	}
 }
 
-func (app *App) Run() {
-	app.Router.Run(app.config.App.Listen)
+func (app *App) Run() error {
+	return app.Router.Run(app.config.App.Listen)
 }
