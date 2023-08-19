@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"gin-helloworld/config"
 	"log"
-	"net/http"
 	"regexp"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
@@ -29,7 +29,10 @@ func Default() (*App, error) {
 }
 
 func New(config *config.Config) (*App, error) {
-	dbpool, err := pgxpool.New(context.Background(), config.Pg.Url)
+	r := strings.NewReplacer("{user}", config.Pg.User, "{password}",
+		config.Pg.Password, "{host}", config.Pg.Host)
+
+	dbpool, err := pgxpool.New(context.Background(), r.Replace(config.Pg.Url))
 	if err != nil {
 		return nil, err
 	}
@@ -57,14 +60,6 @@ func New(config *config.Config) (*App, error) {
 	router.POST("/save_stat", saveStat(dbpool))
 	router.POST("/get_stat", getStat(dbpool))
 	router.DELETE("/clear_stat", clearStat(dbpool))
-	router.GET("/test", func(c *gin.Context) {
-		_, err := dbpool.Exec(c, "select pg_sleep(10)")
-		if err != nil {
-			c.AbortWithError(http.StatusInternalServerError, err)
-			return
-		}
-		c.Status(http.StatusOK)
-	})
 
 	c := &App{
 		router,

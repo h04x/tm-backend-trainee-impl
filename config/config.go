@@ -16,7 +16,10 @@ type App struct {
 }
 
 type Pg struct {
-	Url string `env-required:"true" env:"POSTGRES_URL"`
+	Url      string `env-required:"true" env:"POSTGRES_URL"`
+	User     string `env-required:"true" env:"POSTGRES_USER"`
+	Password string `env-required:"true" env:"POSTGRES_PASSWORD"`
+	Host     string `env-required:"true" env:"POSTGRES_HOST"`
 }
 
 func NewConfig(configPath string) (*Config, error) {
